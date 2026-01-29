@@ -1,42 +1,11 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
-from rembg import remove
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
-import io
-import uvicorn
+from rembg import remove, new_session
 
-# Initialize Rate Limiter
-limiter = Limiter(key_func=get_remote_address)
-
-app = FastAPI(
-    title="AI Background Remover API",
-    description="API for removing image backgrounds using rembg",
-    version="1.0.0"
-)
-
-# Set up global rate limit exception handler
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-
-# CORS Configuration
-# Allow all origins for development/mobile access
-# In production, you might want to restrict this to your specific domain or app scheme
-origins = ["*"]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-@app.get("/")
-def read_root():
-    return {"message": "AI Background Remover API is running"}
+# Initialize session with lightweight model 'u2netp' (approx 5MB vs 170MB)
+# This prevents download timeouts on free hosting servers
+model_session = new_session("u2netp")
 
 @app.post("/remove-bg")
 @limiter.limit("5/minute")
@@ -52,9 +21,8 @@ async def remove_background(request: Request, file: UploadFile = File(...)):
         # Read image content
         contents = await file.read()
         
-        # Process image
-        # rembg.remove takes bytes and returns bytes
-        output_image = remove(contents)
+        # Process image using the pre-loaded lightweight session
+        output_image = remove(contents, session=model_session)
 
         # Return the processed image as PNG
         return Response(content=output_image, media_type="image/png")
