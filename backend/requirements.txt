@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+rembg[cpu]
+python-multipart
+slowapi
+pillow
+numpy
+onnxruntime

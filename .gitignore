@@ -1,0 +1,30 @@
+# Node
+node_modules/
+dist/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+backend_env/
+.env
+
+# Capacitor
+android/app/build/
+android/.gradle/
+android/local.properties
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Misc
+*.log
+.DS_Store
