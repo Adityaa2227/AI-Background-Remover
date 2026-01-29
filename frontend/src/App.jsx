@@ -65,13 +65,13 @@ function App() {
       formData.append('file', originalImage);
 
       // Dynamic URL based on Platform
-      // Web: localhost
-      // Android Emulator: 10.0.2.2
-      // Physical Android Device: Needs your PC's LAN IP (e.g. 192.168.x.x)
+      // Web: localhost (for dev)
+      // Android: Production Render URL (so it works on real phones)
       let BACKEND_URL = 'http://localhost:8000';
       
       if (Capacitor.getPlatform() === 'android') {
-          BACKEND_URL = 'http://10.0.2.2:8000';
+          // LIVE Render Backend
+          BACKEND_URL = 'https://ai-background-remover-cuk3.onrender.com';
       }
       
       console.log('Using Backend URL:', BACKEND_URL); 
