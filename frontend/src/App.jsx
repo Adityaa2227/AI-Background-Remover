@@ -65,12 +65,16 @@ function App() {
       formData.append('file', originalImage);
 
       // Dynamic URL based on Platform
-      // Web: localhost (for dev)
-      // Android: Production Render URL (so it works on real phones)
-      let BACKEND_URL = 'http://localhost:8000';
+      // Default: Live Render Backend (for Vercel Web & Android)
+      let BACKEND_URL = 'https://ai-background-remover-cuk3.onrender.com';
+      
+      // Optional: Use localhost ONLY if running locally in dev mode
+      if (!import.meta.env.PROD && window.location.hostname === 'localhost') {
+           BACKEND_URL = 'http://localhost:8000';
+      }
       
       if (Capacitor.getPlatform() === 'android') {
-          // LIVE Render Backend
+          // Double check for Android to be safe, though Render URL works for both.
           BACKEND_URL = 'https://ai-background-remover-cuk3.onrender.com';
       }
       
